@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class PostCrudService {
+public class PostService {
 
     private final PostRepository postRepository;
 

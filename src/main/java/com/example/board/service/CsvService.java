@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 public class CsvService {
 
-    private final PostCrudService postCrudService;
+    private final PostService postService;
 
     public void importPostsFromCsv(InputStreamReader inputStreamReader) {
         try (CSVParser csvParser = new CSVParser(inputStreamReader, CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
@@ -36,7 +36,7 @@ public class CsvService {
             }
 
             if (!posts.isEmpty()) {
-                postCrudService.saveAll(posts);
+                postService.saveAll(posts);
             }
         } catch (Exception e) {
             throw new CsvProcessingException("Error reading CSV data.", e);

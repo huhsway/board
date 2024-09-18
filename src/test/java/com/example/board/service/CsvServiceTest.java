@@ -1,6 +1,5 @@
 package com.example.board.service;
 
-import com.example.board.entity.Post;
 import com.example.board.exception.CsvProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ import static org.mockito.Mockito.*;
 public class CsvServiceTest {
 
     @Mock
-    private PostCrudService postCrudService;
+    private PostService postService;
 
     @InjectMocks
     private CsvService csvService;
@@ -43,7 +42,7 @@ public class CsvServiceTest {
         csvService.importPostsFromCsv(new InputStreamReader(inputStream));
 
         // Then
-        verify(postCrudService, times(1)).saveAll(anyList());
+        verify(postService, times(1)).saveAll(anyList());
     }
 
     @Test
@@ -58,7 +57,7 @@ public class CsvServiceTest {
         csvService.importPostsFromCsv(new InputStreamReader(inputStream));
 
         // Then
-        verify(postCrudService, never()).saveAll(anyList()); // saveAll should not be called
+        verify(postService, never()).saveAll(anyList()); // saveAll should not be called
     }
 
     @Test
@@ -75,7 +74,7 @@ public class CsvServiceTest {
                 csvService.importPostsFromCsv(new InputStreamReader(inputStream))
         );
 
-        verify(postCrudService, never()).saveAll(anyList());
+        verify(postService, never()).saveAll(anyList());
     }
 
     @Test
@@ -94,6 +93,6 @@ public class CsvServiceTest {
         );
 
         // Since we throw exception on malformed data, `saveAll` should not be called at all
-        verify(postCrudService, never()).saveAll(anyList());
+        verify(postService, never()).saveAll(anyList());
     }
 }

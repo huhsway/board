@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
@@ -19,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PostCrudServiceTest {
+public class PostServiceTest {
 
     @Mock
     private PostRepository postRepository;
 
     @InjectMocks
-    private PostCrudService postCrudService;
+    private PostService postService;
 
     private Post post1;
     private Post post2;
@@ -43,7 +42,7 @@ public class PostCrudServiceTest {
         when(postRepository.findAll()).thenReturn(Arrays.asList(post1, post2));
 
         // When
-        List<Post> result = postCrudService.getAllPosts();
+        List<Post> result = postService.getAllPosts();
 
         // Then
         assertEquals(2, result.size());
@@ -56,7 +55,7 @@ public class PostCrudServiceTest {
         when(postRepository.findById(1L)).thenReturn(Optional.of(post1));
 
         // When
-        Post result = postCrudService.getPostById(1L);
+        Post result = postService.getPostById(1L);
 
         // Then
         assertNotNull(result);
@@ -70,7 +69,7 @@ public class PostCrudServiceTest {
         when(postRepository.findById(1L)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(PostNotFoundException.class, () -> postCrudService.getPostById(1L));
+        assertThrows(PostNotFoundException.class, () -> postService.getPostById(1L));
         verify(postRepository, times(1)).findById(1L);
     }
 
@@ -80,7 +79,7 @@ public class PostCrudServiceTest {
         when(postRepository.save(post1)).thenReturn(post1);
 
         // When
-        Post result = postCrudService.createPost(post1);
+        Post result = postService.createPost(post1);
 
         // Then
         assertNotNull(result);
@@ -96,7 +95,7 @@ public class PostCrudServiceTest {
 
         // When
         Post updatedPost = new Post(1L, 101L, "Updated Title", "Updated Body");
-        Post result = postCrudService.updatePost(1L, updatedPost);
+        Post result = postService.updatePost(1L, updatedPost);
 
         // Then
         assertNotNull(result);
@@ -110,7 +109,7 @@ public class PostCrudServiceTest {
         when(postRepository.existsById(1L)).thenReturn(true);
 
         // When
-        postCrudService.deletePost(1L);
+        postService.deletePost(1L);
 
         // Then
         verify(postRepository, times(1)).deleteById(1L);
@@ -123,7 +122,7 @@ public class PostCrudServiceTest {
         when(postRepository.saveAll(anyList())).thenReturn(posts);
 
         // When
-        List<Post> result = postCrudService.processAndSvePosts(posts, "Title");
+        List<Post> result = postService.processAndSvePosts(posts, "Title");
 
         // Then
         assertNotNull(result);

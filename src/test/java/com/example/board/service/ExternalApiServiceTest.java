@@ -8,13 +8,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.reactive.function.client.WebClientRequestException;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -28,7 +25,7 @@ import static org.mockito.Mockito.*;
 class ExternalApiServiceTest {
 
     @Mock
-    private PostCrudService postCrudService;
+    private PostService postService;
 
     @Mock
     private WebClient.Builder webClientBuilder;
@@ -68,7 +65,7 @@ class ExternalApiServiceTest {
         externalApiService.fetchAndSaveExternalPosts();
 
         // then
-        verify(postCrudService, times(1)).saveAll(mockPosts);
+        verify(postService, times(1)).saveAll(mockPosts);
     }
 
     @Test
@@ -89,6 +86,6 @@ class ExternalApiServiceTest {
 
         // when & then
         assertThrows(ExternalApiException.class, () -> externalApiService.fetchAndSaveExternalPosts());
-        verify(postCrudService, never()).saveAll(any());
+        verify(postService, never()).saveAll(any());
     }
 }
