@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import com.example.board.dto.CommentRequestDTO;
 import com.example.board.entity.Comment;
 import com.example.board.entity.Post;
 import com.example.board.repository.CommentRepository;
@@ -19,10 +20,13 @@ public class CommentService {
 
     // 특정 게시글에 댓글 추가
     @Transactional
-    public Comment addCommentToPost(Long postId, Comment comment) {
+    public Comment addCommentToPost(Long postId, CommentRequestDTO commentRequestDTO) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found with id: " + postId));
-        comment.setPost(post); // Comment와 Post 연관관계 설정
+        Comment comment = Comment.builder()
+                .content(commentRequestDTO.getContent())
+                .post(post)
+                .build();
         return commentRepository.save(comment);
     }
 

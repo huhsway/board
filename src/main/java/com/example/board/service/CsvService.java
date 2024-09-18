@@ -24,7 +24,6 @@ public class CsvService {
             for (CSVRecord record : csvParser) {
                 try {
                     Post post = Post.builder()
-                            .id(Long.parseLong(record.get(0)))
                             .userId(Long.parseLong(record.get(1)))
                             .title(record.get(2))
                             .body(record.get(3))

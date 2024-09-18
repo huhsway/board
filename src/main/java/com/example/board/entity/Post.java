@@ -1,9 +1,6 @@
 package com.example.board.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.List;
 public class Post {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
     private String title;
@@ -26,8 +24,7 @@ public class Post {
     // comments를 제외한 생성자에 @Builder 적용
 
     @Builder
-    public Post(Long id, Long userId, String title, String body) {
-        this.id = id;
+    public Post(Long userId, String title, String body) {
         this.userId = userId;
         this.title = title;
         this.body = body;

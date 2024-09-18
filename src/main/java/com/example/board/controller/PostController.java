@@ -1,9 +1,12 @@
 package com.example.board.controller;
 
+import com.example.board.dto.PostRequestDTO;
+import com.example.board.dto.PostResponseDTO;
 import com.example.board.entity.Post;
 import com.example.board.service.CsvService;
 import com.example.board.service.ExternalApiService;
 import com.example.board.service.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,26 +27,31 @@ public class PostController {
     private final CsvService csvService;
 
     @GetMapping
-    public ResponseEntity<List<Post>> getAllPosts() {
-        return ResponseEntity.ok(postService.getAllPosts());
+    public ResponseEntity<List<PostResponseDTO>> getAllPosts() {
+        List<Post> posts = postService.getAllPosts();
+        List<PostResponseDTO> responseDTOs = posts.stream()
+                .map(PostResponseDTO::from)
+                .toList();
+        return ResponseEntity.ok(responseDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
-        return ResponseEntity.ok(postService.getPostById(id));
+    public ResponseEntity<PostResponseDTO> getPostById(@PathVariable Long id) {
+        Post post = postService.getPostById(id);
+        return ResponseEntity.ok(PostResponseDTO.from(post));
     }
 
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        Post createdPost = postService.createPost(post);
-        return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
+    public ResponseEntity<PostResponseDTO> createPost(@Valid @RequestBody PostRequestDTO postRequestDTO) {
+        Post createdPost = postService.createPost(postRequestDTO);
+        return new ResponseEntity<>(PostResponseDTO.from(createdPost), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post post) {
-        return ResponseEntity.ok(postService.updatePost(id, post));
+    public ResponseEntity<PostResponseDTO> updatePost(@PathVariable Long id, @RequestBody PostRequestDTO postRequestDTO) {
+        Post updatedPost = postService.updatePost(id, postRequestDTO);
+        return ResponseEntity.ok(PostResponseDTO.from(updatedPost));
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
